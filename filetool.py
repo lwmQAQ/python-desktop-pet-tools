@@ -21,12 +21,28 @@ def process_file(filepath):
         # 生成转换后的 Word 文件路径
         word_filepath = os.path.splitext(filepath)[0] + '.pdf'
         try:
-            convert_pdf_to_docx(filepath, word_filepath)
+            convert_docx_to_pdf(filepath, word_filepath)
             return f"文件已成功转换为PDF格式：{word_filepath}"
         except Exception as e:
             return f"文件转换失败: {filepath}, 错误: {str(e)}"
+    elif filepath.lower().endswith('.xls') or filepath.lower().endswith('.xlsx'):
+        # 生成转换后的 Word 文件路径
+        word_filepath = os.path.splitext(filepath)[0] + '.csv'
+        try:
+            convert_excel_to_csv(filepath, word_filepath)
+            return f"文件已成功转换为CSV格式：{word_filepath}"
+        except Exception as e:
+            return f"文件转换失败: {filepath}, 错误: {str(e)}"
+    elif filepath.lower().endswith('.csv'):
+        # 生成转换后的 Word 文件路径
+        word_filepath = os.path.splitext(filepath)[0] + '.xlsx'
+        try:
+            convert_csv_to_excel(filepath, word_filepath)
+            return f"文件已成功转换为CSV格式：{word_filepath}"
+        except Exception as e:
+            return f"文件转换失败: {filepath}, 错误: {str(e)}"
     else:
-        return "文件不是 PDF 格式，无法转换。"
+        return "文件格式不支持"
 
 
 def convert_pdf_to_docx(pdf_path, docx_path):
@@ -37,26 +53,20 @@ def convert_pdf_to_docx(pdf_path, docx_path):
 
 
 def convert_docx_to_pdf(docx_path, pdf_path):
-    try:
-        # 调用 docx2pdf.convert 方法进行转换
-        convert(docx_path, pdf_path)
-        # 检查文件是否成功生成
-        if os.path.exists(pdf_path):
-            print(f"文件已成功转换为 PDF: {pdf_path}")
-        else:
-            print(f"转换后未生成 PDF: {pdf_path}")
-    except Exception as e:
-        print(f"文件转换失败，错误: {str(e)}")
-
+    # 调用 docx2pdf.convert 方法进行转换
+    return convert(docx_path, pdf_path)
 
 
 def convert_excel_to_csv(excel_path, csv_path):
-    try:
-        # 读取 Excel 文件
-        df = pd.read_excel(excel_path)
+    # 读取 Excel 文件
+    df = pd.read_excel(excel_path)
 
-        # 将数据框写入 CSV 文件
-        df.to_csv(csv_path, index=False)  # 不保留行索引
-        print(f"成功将 {excel_path} 转换为 {csv_path}")
-    except Exception as e:
-        print(f"转换失败：{e}")
+    # 将数据框写入 CSV 文件
+    return df.to_csv(csv_path, index=False)  # 不保留行索引
+
+
+def convert_csv_to_excel(csv_path, excel_path):
+    # 读取 CSV 文件
+    df = pd.read_csv(csv_path)
+    # 将数据保存为 Excel 文件
+    return df.to_excel(excel_path, index=False, engine='openpyxl')  # 使用 openpyxl 写入 Excel

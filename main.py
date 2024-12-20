@@ -186,13 +186,11 @@ class DesktopPet(QMainWindow):
     def process_file_in_thread(self, file_path):
         from filetool import process_file  # 确保导入不会阻塞主线程
         message = process_file(file_path)
-        print(message)
         # 处理完成后发送信号
         self.file_signal_emitter.file_processed.emit(file_path)
 
     def on_file_processed(self, message):
         # 显示文件处理完成的提示
-        print("Success",message)
         QMessageBox.information(self, "文件处理完成",message)
 
 
